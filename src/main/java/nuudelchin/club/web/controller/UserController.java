@@ -51,7 +51,7 @@ public class UserController {
 			result.put("email", email);
 			result.put("picture", picture);
 		}
-				
+		System.out.println(result);		
 		return result;
 	}
 }

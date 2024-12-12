@@ -10,15 +10,18 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import jakarta.servlet.http.HttpServletRequest;
+import nuudelchin.club.web.jwt.CustomLogoutFilter;
 import nuudelchin.club.web.jwt.JWTFilter;
 import nuudelchin.club.web.jwt.JWTUtil;
 import nuudelchin.club.web.oauth2.CustomClientRegistrationRepository;
 import nuudelchin.club.web.oauth2.CustomOAuth2AuthorizedClientService;
 import nuudelchin.club.web.oauth2.CustomSuccessHandler;
+import nuudelchin.club.web.repository.RefreshRepository;
 import nuudelchin.club.web.service.CustomOAuth2UserService;
 
 @Configuration
@@ -31,13 +34,15 @@ public class SecurityConfig {
     private final JdbcTemplate jdbcTemplate;
     private final CustomSuccessHandler customSuccessHandler;
     private final JWTUtil jwtUtil;
+    private final RefreshRepository refreshRepository;
 
     public SecurityConfig(CustomOAuth2UserService customOAuth2UserService
     		, CustomClientRegistrationRepository customClientRegistrationRepository
     		, CustomOAuth2AuthorizedClientService customOAuth2AuthorizedClientService
     		, JdbcTemplate jdbcTemplate
     		, CustomSuccessHandler customSuccessHandler
-    		, JWTUtil jwtUtil) {
+    		, JWTUtil jwtUtil
+    		, RefreshRepository refreshRepository) {
 
         this.customOAuth2UserService = customOAuth2UserService;
         this.customClientRegistrationRepository = customClientRegistrationRepository;
@@ -45,6 +50,7 @@ public class SecurityConfig {
         this.jdbcTemplate = jdbcTemplate;
         this.customSuccessHandler = customSuccessHandler;
         this.jwtUtil = jwtUtil;
+        this.refreshRepository = refreshRepository;
     }
 
     @Bean
@@ -65,7 +71,7 @@ public class SecurityConfig {
 						configuration.setMaxAge(3600L);
 						
 						configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
-						configuration.setExposedHeaders(Collections.singletonList("Authorization"));
+						configuration.setExposedHeaders(Collections.singletonList("access"));
 						
 						return configuration;
 					}
@@ -95,7 +101,11 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/").permitAll()
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/reissue").permitAll()
                         .anyRequest().authenticated());
+        
+        http.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
 
         http
                 .sessionManagement((session) -> session
