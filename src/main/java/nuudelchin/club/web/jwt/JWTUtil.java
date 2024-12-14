@@ -1,6 +1,7 @@
 package nuudelchin.club.web.jwt;
 
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
@@ -59,6 +60,17 @@ public class JWTUtil {
 				.getPayload()
 				.getExpiration()
 				.before(new Date(System.currentTimeMillis()));
+    }
+    
+    public String getExpiration(String token) {
+    	Date expiration = Jwts.parser()
+    			.verifyWith(secretKey)
+				.build()
+				.parseSignedClaims(token)
+				.getPayload()
+				.getExpiration();    	
+    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return dateFormat.format(expiration);
     }
 
     public String createJwt(String category, String username, String role, Long expiredMs) {

@@ -23,9 +23,11 @@ public class UserController {
 		this.userService = userService;
 	}
 
-	@GetMapping("/my")
+	@GetMapping("/user")
 	@ResponseBody
-	public Object myAPI() {
+	public Object userAPI() {
+		
+		System.out.println("userAPI");
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		

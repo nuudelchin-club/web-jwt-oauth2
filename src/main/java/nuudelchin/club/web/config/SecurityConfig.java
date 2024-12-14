@@ -85,9 +85,6 @@ public class SecurityConfig {
 
         http
                 .httpBasic((auth) -> auth.disable());
-        
-        http
-        		.addFilterAfter(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         http
         		.oauth2Login((oauth2) -> oauth2
@@ -96,16 +93,18 @@ public class SecurityConfig {
         				.userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
         						.userService(customOAuth2UserService))
         				.successHandler(customSuccessHandler)
-				);
-
-        http
-                .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/").permitAll()
-                        .requestMatchers("/login").permitAll()
-                        .requestMatchers("/reissue").permitAll()
-                        .anyRequest().authenticated());
+				);        
         
-        http.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
+        http
+		        .authorizeHttpRequests((auth) -> auth
+		        		.requestMatchers("/login", "/", "reissue").permitAll()
+		                .anyRequest().authenticated());
+        
+        http
+				.addFilterAfter(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        
+        http
+        		.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
 
         http
                 .sessionManagement((session) -> session

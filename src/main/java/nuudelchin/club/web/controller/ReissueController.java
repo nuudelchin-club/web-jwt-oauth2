@@ -31,6 +31,8 @@ public class ReissueController {
 
     @PostMapping("/reissue")
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
+    	
+    	System.out.println("reissue");
 
         //get refresh token
         String refreshToken = null;
@@ -47,6 +49,8 @@ public class ReissueController {
             if (cookie.getName().equals("refresh")) {
 
             	refreshToken = cookie.getValue();
+            	
+            	break;
             }
         }
 
@@ -89,7 +93,7 @@ public class ReissueController {
 
         //make new JWT
         String newAccessToken = jwtUtil.createJwt("access", username, role, 60000L /*600000L*/);
-        String newRefreshToken = jwtUtil.createJwt("refresh", username, role, 600000L /*86400000L*/);
+        String newRefreshToken = jwtUtil.createJwt("refresh", username, role, 180000L /*86400000L*/);
         
         //Refresh 토큰 저장 DB에 기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장
         refreshService.delete(refreshToken);
@@ -97,13 +101,29 @@ public class ReissueController {
     	refreshEntity = new RefreshEntity();
         refreshEntity.setUsername(username);
         refreshEntity.setRefresh(newRefreshToken);
-        refreshEntity.setExpiration(new Date(System.currentTimeMillis() + 600000L /*86400000L*/).toString());
+        refreshEntity.setExpiration(new Date(System.currentTimeMillis() + 180000L /*86400000L*/).toString());
         
         refreshService.save(refreshEntity);
 
         //response
-        response.setHeader("access", newAccessToken);
-        response.addCookie(createCookie("refresh", newRefreshToken));
+        Cookie accessCookie = new Cookie("access", newAccessToken);
+        accessCookie.setMaxAge(1*1*60);		// 10 minutes
+        accessCookie.setSecure(true);		// use case is https
+        accessCookie.setPath("/");			// Бүх эндпойнт дээр илгээгдэх
+        accessCookie.setHttpOnly(true);		// cannot use cookie in java script
+        
+        Cookie refreshCookie = new Cookie("refresh", newRefreshToken);
+        refreshCookie.setMaxAge(1*3*60);	// 24 hours
+        refreshCookie.setSecure(true);		// use case is https
+        refreshCookie.setPath("/");			// Бүх эндпойнт дээр илгээгдэх
+        refreshCookie.setHttpOnly(true);	// cannot use cookie in java script
+
+        response.addCookie(accessCookie);
+        response.addCookie(refreshCookie);
+        response.setStatus(HttpStatus.OK.value());
+        
+        System.out.println("reissue, access token expire time: " + jwtUtil.getExpiration(newAccessToken));
+        System.out.println("reissue, refresh token expire time: " + jwtUtil.getExpiration(newRefreshToken));
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -111,7 +131,7 @@ public class ReissueController {
     private Cookie createCookie(String key, String value) {
 
     	Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(24*60*60);	// 24 hours
+        cookie.setMaxAge(1*3*60);	// 24 hours
         cookie.setSecure(true);		// use case is https
         cookie.setPath("/");		// Бүх эндпойнт дээр илгээгдэх
         cookie.setHttpOnly(true);	// cannot use cookie in java script
