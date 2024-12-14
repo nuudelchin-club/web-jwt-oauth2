@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import nuudelchin.club.web.entity.RefreshEntity;
 import nuudelchin.club.web.jwt.JWTUtil;
 import nuudelchin.club.web.service.RefreshService;
+import nuudelchin.club.web.service.SecretService;
 
 @Controller
 @ResponseBody
@@ -22,11 +23,16 @@ public class ReissueController {
 
     private final JWTUtil jwtUtil;
     private final RefreshService refreshService;
+    private final SecretService secretService;
 
-    public ReissueController(JWTUtil jwtUtil, RefreshService refreshService) {
+    public ReissueController(
+    		JWTUtil jwtUtil, 
+    		RefreshService refreshService,
+    		SecretService secretService) {
 
         this.jwtUtil = jwtUtil;
         this.refreshService = refreshService;
+        this.secretService = secretService;
     }
 
     @PostMapping("/reissue")
@@ -92,8 +98,8 @@ public class ReissueController {
         String role = jwtUtil.getRole(refreshToken);
 
         //make new JWT
-        String newAccessToken = jwtUtil.createJwt("access", username, role, 60000L /*600000L*/);
-        String newRefreshToken = jwtUtil.createJwt("refresh", username, role, 180000L /*86400000L*/);
+        String newAccessToken = jwtUtil.createJwt("access", username, role, secretService.getJwtAccess());
+        String newRefreshToken = jwtUtil.createJwt("refresh", username, role, secretService.getJwtRefresh());
         
         //Refresh 토큰 저장 DB에 기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장
         refreshService.delete(refreshToken);
@@ -101,19 +107,19 @@ public class ReissueController {
     	refreshEntity = new RefreshEntity();
         refreshEntity.setUsername(username);
         refreshEntity.setRefresh(newRefreshToken);
-        refreshEntity.setExpiration(new Date(System.currentTimeMillis() + 180000L /*86400000L*/).toString());
+        refreshEntity.setExpiration(new Date(System.currentTimeMillis() + secretService.getJwtRefresh()).toString());
         
         refreshService.save(refreshEntity);
 
         //response
         Cookie accessCookie = new Cookie("access", newAccessToken);
-        accessCookie.setMaxAge(1*1*60);		// 10 minutes
+        accessCookie.setMaxAge(secretService.getJwtAccessCookie());
         accessCookie.setSecure(true);		// use case is https
         accessCookie.setPath("/");			// Бүх эндпойнт дээр илгээгдэх
         accessCookie.setHttpOnly(true);		// cannot use cookie in java script
         
         Cookie refreshCookie = new Cookie("refresh", newRefreshToken);
-        refreshCookie.setMaxAge(1*3*60);	// 24 hours
+        refreshCookie.setMaxAge(secretService.getJwtRefreshCookie());
         refreshCookie.setSecure(true);		// use case is https
         refreshCookie.setPath("/");			// Бүх эндпойнт дээр илгээгдэх
         refreshCookie.setHttpOnly(true);	// cannot use cookie in java script
@@ -126,16 +132,5 @@ public class ReissueController {
         System.out.println("reissue, refresh token expire time: " + jwtUtil.getExpiration(newRefreshToken));
 
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-    
-    private Cookie createCookie(String key, String value) {
-
-    	Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(1*3*60);	// 24 hours
-        cookie.setSecure(true);		// use case is https
-        cookie.setPath("/");		// Бүх эндпойнт дээр илгээгдэх
-        cookie.setHttpOnly(true);	// cannot use cookie in java script
-
-        return cookie;
     }
 }

@@ -19,17 +19,23 @@ import nuudelchin.club.web.dto.CustomOAuth2User;
 import nuudelchin.club.web.entity.RefreshEntity;
 import nuudelchin.club.web.jwt.JWTUtil;
 import nuudelchin.club.web.repository.RefreshRepository;
+import nuudelchin.club.web.service.SecretService;
 
 @Component
 public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JWTUtil jwtUtil;
     private final RefreshRepository refreshRepository;
+    private final SecretService secretService;
 
-    public CustomSuccessHandler(JWTUtil jwtUtil, RefreshRepository refreshRepository) {
+    public CustomSuccessHandler(
+    		JWTUtil jwtUtil, 
+    		RefreshRepository refreshRepository,
+    		SecretService secretService) {
 
         this.jwtUtil = jwtUtil;
         this.refreshRepository = refreshRepository;
+        this.secretService = secretService;
     }
 
     @Override
@@ -48,24 +54,24 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         
         String role = auth.getAuthority();
 
-        String access = jwtUtil.createJwt("access", username, role, 60000L /*600000L*/);	// 10 minutes
-        String refresh = jwtUtil.createJwt("refresh", username, role, 180000L /*86400000L*/);	// 24 hours
+        String access = jwtUtil.createJwt("access", username, role, secretService.getJwtAccess());
+        String refresh = jwtUtil.createJwt("refresh", username, role, secretService.getJwtRefresh());
         
         RefreshEntity refreshEntity = new RefreshEntity();
         refreshEntity.setUsername(username);
         refreshEntity.setRefresh(refresh);
-        refreshEntity.setExpiration(new Date(System.currentTimeMillis() + 180000L /*86400000L*/).toString());
+        refreshEntity.setExpiration(new Date(System.currentTimeMillis() + secretService.getJwtRefresh()).toString());
         
         refreshRepository.save(refreshEntity);
         
         Cookie accessCookie = new Cookie("access", access);
-        accessCookie.setMaxAge(1*1*60);		// 10 minutes
+        accessCookie.setMaxAge(secretService.getJwtAccessCookie());
         accessCookie.setSecure(true);		// use case is https
         accessCookie.setPath("/");			// Бүх эндпойнт дээр илгээгдэх
         accessCookie.setHttpOnly(true);		// cannot use cookie in java script
         
         Cookie refreshCookie = new Cookie("refresh", refresh);
-        refreshCookie.setMaxAge(1*3*60);	// 24 hours
+        refreshCookie.setMaxAge(secretService.getJwtRefreshCookie());
         refreshCookie.setSecure(true);		// use case is https
         refreshCookie.setPath("/");			// Бүх эндпойнт дээр илгээгдэх
         refreshCookie.setHttpOnly(true);	// cannot use cookie in java script

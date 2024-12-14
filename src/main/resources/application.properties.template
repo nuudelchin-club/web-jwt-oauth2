@@ -26,4 +26,7 @@ naver.client-secret=
 naver.redirect-uri=
 
 spring.jwt.secret=
-spring.jwt.time=
+jwt.access=
+jwt.refresh=
+jwt.access.cookie=
+jwt.refresh.cookie=
