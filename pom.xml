@@ -12,7 +12,7 @@
 	<artifactId>web-jwt-oauth2</artifactId>
 	<version>1.0.0</version>
 	<name>jwt-oauth2</name>
-	<description>nuudelchin.club web web oauth2</description>
+	<description>nuudelchin.club web oauth2</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -102,6 +102,11 @@
 		<dependency>
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+		
+		<dependency>
+		    <groupId>jakarta.persistence</groupId>
+		    <artifactId>jakarta.persistence-api</artifactId>
 		</dependency>
 		
 	</dependencies>
