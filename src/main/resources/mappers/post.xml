@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="nuudelchin.club.web.repository.PostRepository">
+
+	<select id="getAllList" resultType="nuudelchin.club.web.entity.PostEntity">
+        SELECT * FROM m_post;
+    </select>
+    
+	<insert id="save" parameterType="nuudelchin.club.web.entity.PostEntity">
+    	INSERT INTO m_post (username, content)
+			VALUES (#{username}, #{content});
+    </insert>
+    
+</mapper>

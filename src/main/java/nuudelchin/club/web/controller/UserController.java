@@ -46,7 +46,7 @@ public class UserController {
 			
 			String picture = pictureBytes != null 
 		            ? "data:image/png;base64," + ImageUtility.encodeToBase64(pictureBytes)
-		            : "/images/default-profile.png";
+		            : null; //"/images/default-profile.png";
 			
 			result.put("fullname", fullname);
 			result.put("role", role);
