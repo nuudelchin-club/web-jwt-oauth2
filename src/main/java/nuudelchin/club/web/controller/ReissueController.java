@@ -45,7 +45,7 @@ public class ReissueController {
         Cookie[] cookies = request.getCookies();
         
         if(cookies == null ) {
-        	
+        	System.out.println("BAD_REQUEST 1");
         	//response status code
         	return new ResponseEntity<>("refresh token null", HttpStatus.BAD_REQUEST);
         }
@@ -61,7 +61,7 @@ public class ReissueController {
         }
 
         if (refreshToken == null) {
-
+        	System.out.println("BAD_REQUEST 2");
             //response status code
             return new ResponseEntity<>("refresh token null", HttpStatus.BAD_REQUEST);
         }
@@ -72,7 +72,7 @@ public class ReissueController {
         	jwtUtil.isExpired(refreshToken);
             
         } catch (ExpiredJwtException e) {
-
+        	System.out.println("BAD_REQUEST 3");
             //response status code
             return new ResponseEntity<>("refresh token expired", HttpStatus.BAD_REQUEST);
         }
@@ -81,7 +81,7 @@ public class ReissueController {
         String category = jwtUtil.getCategory(refreshToken);
 
         if (!category.equals("refresh")) {
-
+        	System.out.println("BAD_REQUEST 4");
             //response status code
             return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
         }
@@ -89,7 +89,7 @@ public class ReissueController {
         //DB에 저장되어 있는지 확인
     	RefreshEntity refreshEntity = refreshService.findByRefresh(refreshToken);
     	if (refreshEntity == null) {
-    		
+    		System.out.println("BAD_REQUEST 5");
     		//response body
     		return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
     	}
@@ -102,14 +102,18 @@ public class ReissueController {
         String newRefreshToken = jwtUtil.createJwt("refresh", username, role, secretService.getJwtRefresh());
         
         //Refresh 토큰 저장 DB에 기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장
-        refreshService.delete(refreshToken);
+        int result = refreshService.delete(refreshToken);
+        System.out.println("DELETE : " + result);
     	
     	refreshEntity = new RefreshEntity();
         refreshEntity.setUsername(username);
         refreshEntity.setRefresh(newRefreshToken);
         refreshEntity.setExpiration(new Date(System.currentTimeMillis() + secretService.getJwtRefresh()).toString());
         
-        refreshService.save(refreshEntity);
+        if(result == 1) {
+        	result = refreshService.save(refreshEntity);
+            System.out.println("SAVE : " + result);	
+        }
 
         //response
         Cookie accessCookie = new Cookie("access", newAccessToken);
