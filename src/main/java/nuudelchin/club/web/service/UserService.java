@@ -2,6 +2,7 @@ package nuudelchin.club.web.service;
 
 import org.springframework.stereotype.Service;
 
+import nuudelchin.club.web.common.ImageUtility;
 import nuudelchin.club.web.entity.UserEntity;
 import nuudelchin.club.web.repository.UserRepository;
 
@@ -17,6 +18,20 @@ public class UserService {
 
 	public UserEntity findByUsername(String username) {
 	
-		return userRepository.findByUsername(username);
+		UserEntity entity = userRepository.findByUsername(username);
+		
+		if(entity != null) {
+			
+			byte[] pictureBytes = entity.getPicture();
+			
+			String pictureStr = pictureBytes != null 
+		            ? "data:image/png;base64," + ImageUtility.encodeToBase64(pictureBytes)
+		            : null;
+			
+			entity.setPictureSrc(pictureStr);
+			
+		}
+		
+		return entity;
 	}
 }

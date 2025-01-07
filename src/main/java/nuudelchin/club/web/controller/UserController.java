@@ -1,15 +1,11 @@
 package nuudelchin.club.web.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import nuudelchin.club.web.common.ImageUtility;
 import nuudelchin.club.web.entity.UserEntity;
 import nuudelchin.club.web.service.UserService;
 
@@ -33,27 +29,10 @@ public class UserController {
 		
 		String username = authentication.getName();
 		
-		UserEntity userEntity = userService.findByUsername(username);
+		UserEntity entity = userService.findByUsername(username);
 		
-		Map<String, Object> result = new HashMap<String, Object>(); 
+		System.out.println(entity);
 		
-		if(userEntity != null) {
-			
-			String fullname = userEntity.getFullname();
-			String role = userEntity.getRole();
-			String email = userEntity.getEmail();
-			byte[] pictureBytes = userEntity.getPicture();
-			
-			String picture = pictureBytes != null 
-		            ? "data:image/png;base64," + ImageUtility.encodeToBase64(pictureBytes)
-		            : null; //"/images/default-profile.png";
-			
-			result.put("fullname", fullname);
-			result.put("role", role);
-			result.put("email", email);
-			result.put("picture", picture);
-		}
-		System.out.println(result);		
-		return result;
+		return entity;
 	}
 }

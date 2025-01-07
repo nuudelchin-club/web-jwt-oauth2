@@ -22,4 +22,6 @@ public class UserEntity {
     
     @Lob
     private byte[] picture;
+    
+    private String pictureSrc;
 }
