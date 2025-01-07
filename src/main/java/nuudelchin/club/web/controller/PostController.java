@@ -1,7 +1,5 @@
 package nuudelchin.club.web.controller;
 
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,7 +7,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import nuudelchin.club.web.entity.PostEntity;
 import nuudelchin.club.web.service.PostService;
 
 @Controller
@@ -23,16 +20,12 @@ public class PostController {
 		this.postService = postService;
 	}
 	
-	@GetMapping("/getAllList")
-	public Object getAllList() {
+	@GetMapping("/getPostList")
+	public Object getPostList() {
 		
-		System.out.println("getAllList");
+		System.out.println("getPostList");
 		
-		List<PostEntity> result = postService.getAllList();
-		
-		System.out.println(result);
-		
-		return result;
+		return postService.getPostList();
 	}
 
 	@PostMapping("/upload")
