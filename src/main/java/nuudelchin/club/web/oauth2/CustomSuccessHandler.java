@@ -83,6 +83,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         System.out.println("success, access token expire time: " + jwtUtil.getExpiration(access));
         System.out.println("success, refresh token expire time: " + jwtUtil.getExpiration(refresh));
         
-        response.sendRedirect("https://localhost:3000/");
+        response.sendRedirect("https://localhost/");
     }
 }
