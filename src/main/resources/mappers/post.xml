@@ -5,7 +5,8 @@
 	<select id="selectPostList" resultType="nuudelchin.club.web.entity.PostSelectEntity">
         select 
 			a.content as content,
-			a.updated_at as updated_at, 
+			a.updated_at as updated_at,
+			b.username as author_id, 
 			b.fullname as author, 
 			b.email as email,
 			b.picture as picture
