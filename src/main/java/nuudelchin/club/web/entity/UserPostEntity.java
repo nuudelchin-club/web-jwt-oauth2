@@ -5,31 +5,33 @@ import jakarta.persistence.Lob;
 import lombok.Getter;
 import lombok.Setter;
 import nuudelchin.club.web.common.ImageUtility;
-import nuudelchin.club.web.dto.UserDTO;
+import nuudelchin.club.web.dto.UserPostDTO;
 
 @Entity
-@Getter
 @Setter
-public class UserEntity {
-
-    private String username;    
-    private String fullname;
-    private String email;
-    private String role;    
+@Getter
+public class UserPostEntity {
+	
+	private String username;
+	private String fullname;
+	private String email;    
+    private String content;
+    private String updatedAt;
     @Lob
     private byte[] picture;
     
-    public UserDTO convertToUserDTO() {
+    public UserPostDTO convertToUserPostDTO() {
     	
     	String pictureSrc = picture != null 
 	            ? "data:image/png;base64," + ImageUtility.encodeToBase64(picture)
 	            : null;
     	
-    	UserDTO dto = new UserDTO();
+    	UserPostDTO dto = new UserPostDTO();
     	dto.setUsername(username);
     	dto.setFullname(fullname);
     	dto.setEmail(email);
-    	dto.setRole(role);
+    	dto.setContent(content);
+    	dto.setUpdatedAt(updatedAt);
     	dto.setPicture(pictureSrc);
 		
 		return dto;

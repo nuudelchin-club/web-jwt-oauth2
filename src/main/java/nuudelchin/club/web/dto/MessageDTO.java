@@ -1,19 +1,18 @@
-package nuudelchin.club.web.entity;
+package nuudelchin.club.web.dto;
 
-import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NotifyEntity {
+public class MessageDTO {
 	
-    private String senderId;
-    private String recipientId;
+    private String senderId;    
     private String content;
+    private String fullname;
+    private String picture;
 }

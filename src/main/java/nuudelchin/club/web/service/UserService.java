@@ -4,7 +4,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import nuudelchin.club.web.common.ImageUtility;
+import nuudelchin.club.web.dto.UserDTO;
 import nuudelchin.club.web.entity.UserEntity;
 import nuudelchin.club.web.repository.UserRepository;
 
@@ -18,29 +18,19 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public UserEntity getLoggedIn() {
+    public UserDTO getLoggedIn() {
     	
     	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();		
 		String username = authentication.getName();		
 		return findByUsername(username);
     }
     
-	public UserEntity findByUsername(String username) {
+	public UserDTO findByUsername(String username) {
 	
-		UserEntity entity = userRepository.findByUsername(username);
-		
-		if(entity != null) {
-			
-			byte[] pictureBytes = entity.getPicture();
-			
-			String pictureStr = pictureBytes != null 
-		            ? "data:image/png;base64," + ImageUtility.encodeToBase64(pictureBytes)
-		            : null;
-			
-			entity.setPictureSrc(pictureStr);
-			
-		}
-		
-		return entity;
+		UserEntity entity = userRepository.findByUsername(username);		
+		if(entity != null) {			
+			return entity.convertToUserDTO();			
+		}		
+		return null;
 	}
 }
