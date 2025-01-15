@@ -14,7 +14,7 @@ import nuudelchin.club.web.dto.FacebookResponse;
 import nuudelchin.club.web.dto.GoogleReponse;
 import nuudelchin.club.web.dto.NaverResponse;
 import nuudelchin.club.web.dto.OAuth2Response;
-import nuudelchin.club.web.dto.UserDTO;
+import nuudelchin.club.web.dto.OAuth2UserDTO;
 import nuudelchin.club.web.entity.UserEntity;
 import nuudelchin.club.web.repository.UserRepository;
 
@@ -93,7 +93,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             userRepository.update(userEntity);
         }
         ///
-        UserDTO userDTO = new UserDTO();
+        OAuth2UserDTO userDTO = new OAuth2UserDTO();
         userDTO.setUsername(username);
         userDTO.setFullname(fullname);
         userDTO.setEmail(email);

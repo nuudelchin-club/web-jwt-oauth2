@@ -3,8 +3,6 @@ package nuudelchin.club.web.jwt;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,7 +15,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nuudelchin.club.web.dto.CustomOAuth2User;
-import nuudelchin.club.web.dto.UserDTO;
+import nuudelchin.club.web.dto.OAuth2UserDTO;
 
 public class JWTFilter extends OncePerRequestFilter {
 	
@@ -95,7 +93,7 @@ public class JWTFilter extends OncePerRequestFilter {
         String username = jwtUtil.getUsername(accessToken);
         String role = jwtUtil.getRole(accessToken);
 
-        UserDTO userDTO = new UserDTO();
+        OAuth2UserDTO userDTO = new OAuth2UserDTO();
         userDTO.setUsername(username);
         userDTO.setRole(role);
 
