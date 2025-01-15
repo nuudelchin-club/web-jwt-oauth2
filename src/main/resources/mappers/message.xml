@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="nuudelchin.club.web.repository.MessageRepository">
+
+	<select id="findByChatId" parameterType="String" resultType="nuudelchin.club.web.entity.MessageEntity">
+        SELECT
+        	chat_id AS chatId,
+        	sender_id AS senderId,
+        	recipient_id AS recipientId,
+        	content 
+        FROM m_message
+		WHERE chat_id = #{chatId};  
+    </select>
+    
+	<insert id="save" parameterType="nuudelchin.club.web.entity.MessageEntity">
+    	INSERT INTO m_message (chat_id, sender_id, recipient_id, content)
+		VALUES (#{chatId}, #{senderId}, #{recipientId}, #{content});
+    </insert>
+    
+</mapper>

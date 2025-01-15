@@ -21,9 +21,9 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-	public List<PostSelectEntity> getPostList() {
+	public List<PostSelectEntity> get() {
 	
-		List<PostSelectEntity> list = postRepository.selectPostList();
+		List<PostSelectEntity> list = postRepository.get();
 		
 		int i, isize = list.size();
 		for(i = 0; i < isize; i++) {
@@ -47,10 +47,10 @@ public class PostService {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();		
 		String username = authentication.getName();
 		
-		PostEntity postEntity = new PostEntity();
-		postEntity.setContent(content);
-		postEntity.setUsername(username);
+		PostEntity entity = new PostEntity();
+		entity.setContent(content);
+		entity.setUsername(username);
 		
-		return postRepository.save(postEntity);
+		return postRepository.save(entity);
 	}	
 }

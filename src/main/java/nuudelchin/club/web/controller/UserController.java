@@ -1,15 +1,15 @@
 package nuudelchin.club.web.controller;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import nuudelchin.club.web.entity.UserEntity;
 import nuudelchin.club.web.service.UserService;
 
-@Controller
+@RestController
+@RequestMapping("/user")
 public class UserController {
 	
 	private final UserService userService;
@@ -19,20 +19,13 @@ public class UserController {
 		this.userService = userService;
 	}
 
-	@GetMapping("/user")
-	@ResponseBody
-	public Object userAPI() {
-		
-		System.out.println("userAPI");
-		
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		
-		String username = authentication.getName();
-		
-		UserEntity entity = userService.findByUsername(username);
-		
-		System.out.println(entity);
-		
-		return entity;
+	@GetMapping("getLoggedIn")
+	public Object getLoggedIn() {		
+		return userService.getLoggedIn();
+	}
+	
+	@PostMapping("/findByUsername")
+	public Object findByUsername(@RequestBody String username) {
+		return userService.findByUsername(username);
 	}
 }

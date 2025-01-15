@@ -10,14 +10,14 @@ import lombok.Setter;
 @Getter
 public class PostSelectEntity {
 	
-	private String author_id;
-    private String content;
-    private String updated_at;
-    private String author;
-//    private String email;
+	private String username;
+	private String fullname;
+//	private String email;      
     
     @Lob
-    private byte[] picture;
-    
+    private byte[] picture;    
     private String pictureSrc;
+    
+    private String content;
+    private String updatedAt;
 }

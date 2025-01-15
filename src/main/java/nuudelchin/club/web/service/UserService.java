@@ -1,5 +1,7 @@
 package nuudelchin.club.web.service;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import nuudelchin.club.web.common.ImageUtility;
@@ -16,6 +18,13 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    public UserEntity getLoggedIn() {
+    	
+    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();		
+		String username = authentication.getName();		
+		return findByUsername(username);
+    }
+    
 	public UserEntity findByUsername(String username) {
 	
 		UserEntity entity = userRepository.findByUsername(username);

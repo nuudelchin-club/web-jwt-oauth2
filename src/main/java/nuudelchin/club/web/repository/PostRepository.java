@@ -10,7 +10,7 @@ import nuudelchin.club.web.entity.PostSelectEntity;
 @Mapper
 public interface PostRepository {
 
-	List<PostSelectEntity> selectPostList();
+	List<PostSelectEntity> get();
 	
-	int save(PostEntity PostEntity);
+	int save(PostEntity entity);
 }
