@@ -11,12 +11,17 @@
        	WHERE sender_id = #{senderId} AND recipient_id = #{recipientId};
     </select>
     
-    <select id="select" resultType="nuudelchin.club.web.entity.ChatEntity">
+    <select id="selectBySenderId" parameterType="String" resultType="nuudelchin.club.web.entity.UserChatEntity">
         SELECT 
-        	chat_id AS chatId,
-        	sender_id AS senderId,
-        	recipient_id AS recipientId
-        FROM m_chat;
+			c.chat_id AS chatId,
+			c.sender_id AS senderId,
+			c.recipient_id AS recipientId,
+			u.fullname,
+			u.picture 
+		FROM m_chat c
+		LEFT JOIN m_user u ON (c.recipient_id = u.username)
+		WHERE c.sender_id = #{senderId}
+		ORDER BY c.updated_at DESC;
     </select>
     
 	<insert id="save" parameterType="nuudelchin.club.web.entity.ChatEntity">

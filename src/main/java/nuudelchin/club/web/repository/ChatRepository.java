@@ -5,13 +5,14 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import nuudelchin.club.web.entity.ChatEntity;
+import nuudelchin.club.web.entity.UserChatEntity;
 
 @Mapper
 public interface ChatRepository {
 
 	ChatEntity findBySenderIdAndRecipientId(String senderId, String recipientId);
 	
-	List<ChatEntity> select();
+	List<UserChatEntity> selectBySenderId(String senderId);
 	
 	int save(ChatEntity entity);
 }
