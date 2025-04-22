@@ -64,7 +64,8 @@ public class SecurityConfig {
 					
 						CorsConfiguration configuration = new CorsConfiguration();
 						
-						configuration.setAllowedOrigins(Collections.singletonList("https://localhost"));
+						configuration.setAllowedOrigins(Collections.singletonList("https://nuudelchin.club"));
+						//configuration.setAllowedOrigins(Collections.singletonList("https://localhost"));
 						configuration.setAllowedMethods(Collections.singletonList("*"));
 						configuration.setAllowCredentials(true);
 						configuration.setAllowedHeaders(Collections.singletonList("*"));
