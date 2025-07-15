@@ -2,6 +2,7 @@ package nuudelchin.club.web.config;
 
 import java.util.Collections;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -35,6 +36,9 @@ public class SecurityConfig {
     private final CustomSuccessHandler customSuccessHandler;
     private final JWTUtil jwtUtil;
     private final RefreshRepository refreshRepository;
+    
+    @Value("${app.url}")
+    private String appUrl;
 
     public SecurityConfig(CustomOAuth2UserService customOAuth2UserService
     		, CustomClientRegistrationRepository customClientRegistrationRepository
@@ -64,8 +68,7 @@ public class SecurityConfig {
 					
 						CorsConfiguration configuration = new CorsConfiguration();
 						
-						configuration.setAllowedOrigins(Collections.singletonList("https://nuudelchin.club"));
-						//configuration.setAllowedOrigins(Collections.singletonList("https://localhost"));
+						configuration.setAllowedOrigins(Collections.singletonList(appUrl));
 						configuration.setAllowedMethods(Collections.singletonList("*"));
 						configuration.setAllowCredentials(true);
 						configuration.setAllowedHeaders(Collections.singletonList("*"));

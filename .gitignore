@@ -59,3 +59,5 @@ build/
 src/main/resources/application.properties
 src/main/resources/keystore.p12
 src/main/resources/localhost.p12
+src/main/resources/application-dev.properties
+src/main/resources/application-prod.properties

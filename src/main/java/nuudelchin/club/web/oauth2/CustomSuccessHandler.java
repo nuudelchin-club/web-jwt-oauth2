@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,6 +28,9 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final JWTUtil jwtUtil;
     private final RefreshRepository refreshRepository;
     private final SecretService secretService;
+    
+    @Value("${app.url}")
+    private String appUrl;
 
     public CustomSuccessHandler(
     		JWTUtil jwtUtil, 
@@ -83,7 +87,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         System.out.println("success, access token expire time: " + jwtUtil.getExpiration(access));
         System.out.println("success, refresh token expire time: " + jwtUtil.getExpiration(refresh));
         
-        response.sendRedirect("https://nuudelchin.club/");
-        //response.sendRedirect("https://localhost/");
+        response.sendRedirect(appUrl);
     }
 }
